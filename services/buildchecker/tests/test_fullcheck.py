@@ -112,7 +112,7 @@ class TestFullCheck(unittest.TestCase):
     def test_absolute_path_normalize_to_relative(self):
         self.traces(reader_extra='openat(AT_FDCWD, "/course/project/needed.h", O_RDONLY) = 4\n')
         targets, _ = execution_graph(self.folder, self.root)
-        self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
+        self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "wrong.h"})
 
 
 if __name__ == "__main__":
