@@ -109,6 +109,11 @@ class TestFullCheck(unittest.TestCase):
         with self.assertRaisesRegex(Unsupported, "Files section"):
             declaration_graph(db, self.root)
 
+    def test_absolute_path_normalize_to_relative(self):
+        self.traces(reader_extra='openat(AT_FDCWD, "/course/project/needed.h", O_RDONLY) = 4\n')
+        targets, _ = execution_graph(self.folder, self.root)
+        self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
+
 
 if __name__ == "__main__":
     unittest.main()
