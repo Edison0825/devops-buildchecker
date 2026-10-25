@@ -1,4 +1,9 @@
 """E4 骨架的单元测试。E5/E6 实现方法后，在这里继续添加测试。"""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
+
 from buildchecker import __version__
 from buildchecker.cli import build_parser, main
 from buildchecker.smoke import files_opened

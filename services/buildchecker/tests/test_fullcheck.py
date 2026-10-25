@@ -2,7 +2,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from buildchecker.fullcheck import Unsupported, analyze, declaration_graph, execution_graph
+from buildchecker.fullcheck import Unsupported, analyze, declaration_graph, execution_graph  # type: ignore
 
 
 class TestFullCheck(unittest.TestCase):
@@ -20,7 +20,8 @@ class TestFullCheck(unittest.TestCase):
         return path
 
     def traces(self, reader_extra="", driver_before="", driver_after="", writer_extra=""):
-        self.write("t.10", 'execve("/usr/bin/make", ["make", "app"], []) = 0\nclone(child_stack=NULL, flags=SIGCHLD) = 11\n')
+        self.write("t.10",
+                   'execve("/usr/bin/make", ["make", "app"], []) = 0\nclone(child_stack=NULL, flags=SIGCHLD) = 11\n')
         self.write("t.11", 'execve("/usr/bin/cc", ["cc", "-c", "unit.c", "-o", "unit.o"], []) = 0\n'
                    + driver_before + 'clone(child_stack=NULL, flags=SIGCHLD) = 12\n'
                    + driver_after + 'clone(child_stack=NULL, flags=SIGCHLD) = 13\n')
@@ -39,16 +40,16 @@ class TestFullCheck(unittest.TestCase):
 
     def test_failed_open_and_outside_project_are_not_dependencies(self):
         self.traces(reader_extra='openat(AT_FDCWD, "absent.h", O_RDONLY) = -1 ENOENT (No such file)\n'
-                    'openat(AT_FDCWD, "/usr/include/stdio.h", O_RDONLY) = 5\n'
-                    'openat(AT_FDCWD, "/course/project-other/secret.h", O_RDONLY) = 6\n')
+                                 'openat(AT_FDCWD, "/usr/include/stdio.h", O_RDONLY) = 5\n'
+                                 'openat(AT_FDCWD, "/course/project-other/secret.h", O_RDONLY) = 6\n')
         targets, _ = execution_graph(self.folder, self.root)
         self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
 
     def test_failed_make_exec_and_failed_clone_do_not_create_fake_make_tree(self):
         self.traces()
-        text=(self.folder / "t.11").read_text()
+        text = (self.folder / "t.11").read_text()
         self.write("t.11", 'execve("/missing/make", ["make"], []) = -1 ENOENT (No such file)\n'
-                   'clone3({}, 88) = -1 ENOSYS (Not implemented)\n' + text)
+                           'clone3({}, 88) = -1 ENOSYS (Not implemented)\n' + text)
         targets, _ = execution_graph(self.folder, self.root)
         self.assertIn("unit.o", targets)
 
@@ -59,8 +60,8 @@ class TestFullCheck(unittest.TestCase):
 
     def test_deleted_internal_output_does_not_become_dependency(self):
         self.traces(writer_extra='openat(AT_FDCWD, "temporary.s", O_WRONLY|O_CREAT, 0666) = 4\n'
-                    'openat(AT_FDCWD, "temporary.s", O_RDONLY) = 5\n'
-                    'unlink("temporary.s") = 0\n')
+                                 'openat(AT_FDCWD, "temporary.s", O_RDONLY) = 5\n'
+                                 'unlink("temporary.s") = 0\n')
         targets, _ = execution_graph(self.folder, self.root)
         self.assertEqual(set(targets), {"unit.o"})
         self.assertNotIn("temporary.s", targets["unit.o"]["dependencies"])
@@ -78,8 +79,8 @@ class TestFullCheck(unittest.TestCase):
     def test_unfinished_clone_is_reassembled(self):
         self.traces()
         self.write("t.10", 'execve("/usr/bin/make", ["make", "app"], []) = 0\n'
-                   'clone(child_stack=NULL, flags=SIGCHLD <unfinished ...>\n'
-                   '<... clone resumed>) = 11\n')
+                           'clone(child_stack=NULL, flags=SIGCHLD <unfinished ...>\n'
+                           '<... clone resumed>) = 11\n')
         targets, _ = execution_graph(self.folder, self.root)
         self.assertIn("unit.o", targets)
 
@@ -90,22 +91,22 @@ class TestFullCheck(unittest.TestCase):
             execution_graph(self.folder, self.root)
 
     def test_phony_expands_to_real_files_and_order_only_is_separate(self):
-        db=self.write("db.txt", '# Files\n.PHONY: prepare\nprepare: needed.h\n'
-                      'unit.o: unit.c prepare | build-dir\n# files hash-table stats:\n')
-        declared=declaration_graph(db, self.root)
+        db = self.write("db.txt", '# Files\n.PHONY: prepare\nprepare: needed.h\n'
+                                  'unit.o: unit.c prepare | build-dir\n# files hash-table stats:\n')
+        declared = declaration_graph(db, self.root)
         self.assertNotIn("prepare", declared)
         self.assertEqual(set(declared["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
         self.assertEqual(declared["unit.o"]["order_only"], ["build-dir"])
 
     def test_detection_finds_exact_error_edges_not_just_counts(self):
         self.traces()
-        db=self.write("db.txt", '# Files\nunit.o: unit.c unused.h\n# files hash-table stats:\n')
-        result=analyze(self.folder, db, self.root)
+        db = self.write("db.txt", '# Files\nunit.o: unit.c unused.h\n# files hash-table stats:\n')
+        result = analyze(self.folder, db, self.root)
         self.assertEqual({(x["type"], x["target"], x["dependency"]) for x in result["findings"]},
                          {("MISSING", "unit.o", "needed.h"), ("REDUNDANT", "unit.o", "unused.h")})
 
     def test_make_database_without_files_section_is_not_an_empty_success(self):
-        db=self.write("db.txt", 'unit.o: unit.c needed.h\n')
+        db = self.write("db.txt", 'unit.o: unit.c needed.h\n')
         with self.assertRaisesRegex(Unsupported, "Files section"):
             declaration_graph(db, self.root)
 
@@ -113,6 +114,26 @@ class TestFullCheck(unittest.TestCase):
         self.traces(reader_extra='openat(AT_FDCWD, "/course/project/needed.h", O_RDONLY) = 4\n')
         targets, _ = execution_graph(self.folder, self.root)
         self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
+
+    def test_atomic_rename_keeps_final_output(self):
+        self.traces(
+            writer_extra=(
+                'openat(AT_FDCWD, "unit.tmp", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4\n'
+                'rename("unit.tmp", "unit.o") = 0\n'
+            )
+        )
+
+        targets, _ = execution_graph(self.folder, self.root)
+
+        self.assertEqual(set(targets), {"unit.o"})
+        self.assertEqual(
+            targets["unit.o"]["output_evidence"]["operation"],
+            "rename",
+        )
+        self.assertEqual(
+            set(targets["unit.o"]["dependencies"]),
+            {"unit.c", "needed.h"},
+        )
 
 
 if __name__ == "__main__":

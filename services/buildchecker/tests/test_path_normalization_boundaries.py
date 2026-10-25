@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from buildchecker.fullcheck import execution_graph
+from fullcheck import execution_graph
 
 
 class TestPathNormalizationBoundaries(unittest.TestCase):
