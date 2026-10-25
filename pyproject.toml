@@ -1,7 +1,0 @@
-[project]
-name = "devops-buildchecker"
-version = "0.1.0"
-requires-python = ">=3.14"
-dependencies = [
-    "buildchecker>=0.1.3",
-]

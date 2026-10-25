@@ -7,6 +7,8 @@ C05,共同,CI,正常失败恢复及artifact,PASS,work/ci-green/artifacts-3993628
 C06,共同,CI,必需检查与实际拒绝合并,PASS,work/ci-green/protection-summary.json; work/ci-rejection/PR2-blocked.json; work/ci-rejection/merge-rejection-2.log; work/ci-pr1/PR1-merged.json; work/ci-recovery/PR2-merged.json,"e7-a-quality-gate@15368、strict、enforce_admins；BLOCKED + MERGE_ATTEMPT_EXIT_CODE=1；PR1 合并 96cf3ff、PR2 合并 0c33a57"
 A01,A,E6,MD/RD精确证据与修复,PASS,work/e6-before/evidence/findings.json; work/e6-after/evidence/findings.json,"MISSING main.o→config.h（evidence t.14:579 读、t.15:23 写）；REDUNDANT main.o→unused.h（evidence make-db.txt:1053）；修复后 findings=[]"
 A02,A,E7,三次一致及故障场景,PASS,work/e7-01/gate/gate-result.json; work/e7-02/gate/gate-result.json,"八项全 passed=true；original-1/2/3 集合完全一致；build-failed→CHECK_FAILED、unsupported→UNSUPPORTED、timeout→TIMED_OUT"
+A03,A,E7,个人原子替换自动化测试,PASS,services/buildchecker/tests/test_fullcheck.py::test_atomic_rename_keeps_final_output; work/build-241880267-test-03/unit-tests/stdout.log,"验证 unit.tmp 通过 rename 原子替换为 unit.o 后，unit.o 被正确识别且 unit.tmp 不会被误判为依赖；容器内 21 passed"
+A04,A,E7,个人 E7 门禁验证,PASS,work/e7-241880267-test-03/gate/gate-result.json,"八个门禁场景全部通过；gate-result.json 的 passed=true"
 B01,B,E5,缺失make及候选来源,不适用,A 轨道,本组为 A 轨道，B 轨道交付由配对组完成
 B02,B,E6,构建和同镜像运行验证,不适用,A 轨道,同上
 B03,B,E7,五场景与超时清理,不适用,A 轨道,同上
