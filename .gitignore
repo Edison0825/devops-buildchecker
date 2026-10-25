@@ -9,3 +9,8 @@
 work/
 __pycache__/
 .pytest_cache/
+
+# IDE and local uv/Python environment metadata
+.idea/
+pyproject.toml
+uv.lock

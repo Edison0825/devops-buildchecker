@@ -2,7 +2,7 @@
 
 This restores the documented success exit code. The implementation is unchanged.
 """
-from buildchecker.cli import main
+from buildchecker.cli import main  # type: ignore[import-not-found]
 
 
 def test_version_returns_success_exit_code():
