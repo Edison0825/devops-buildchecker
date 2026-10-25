@@ -7,10 +7,18 @@
 
 # 运行证据：按需挑选后用 git add -f 提交
 work/
+
+# Python and test caches
 __pycache__/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# IDE and local uv/Python environment metadata
+# IDE and local environment metadata
 .idea/
+.venv/
+.DS_Store
 pyproject.toml
 uv.lock
