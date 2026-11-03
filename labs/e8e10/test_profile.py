@@ -39,4 +39,21 @@ class ProfileTests(unittest.TestCase):
         (self.p/'Makefile').write_text((self.p/'Makefile').read_text().replace('-O0','-include unknown.h'))
         with self.assertRaisesRegex(ValueError,'UNSUPPORTED_FLAGS'):scan(self.p)
 
+class StudentE8A(unittest.TestCase):
+    def test_declaration_change_reuses_actual_graph(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p=Path(directory)/'sample'
+            fixture(p)
+            old=scan(p)
+            f=p/'Makefile'
+            f.write_text(f.read_text().replace('main.c unused.h','main.c unused.h config.h'))
+            commit(p,'student: add missing declaration')
+            result=scan(p,old)
+            self.assertEqual(result['actual'],old['actual'])
+            self.assertEqual(set(result['reused']),{'main.o','helper.o'})
+            self.assertEqual(result['refreshed'],[])
+            self.assertEqual(
+                {(x['type'],x['target'],x['dependency']) for x in result['findings']},
+                {('REDUNDANT','main.o','unused.h')})
+
 if __name__=='__main__':unittest.main()
