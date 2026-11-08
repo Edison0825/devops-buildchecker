@@ -39,6 +39,18 @@ class ProfileTests(unittest.TestCase):
         (self.p/'Makefile').write_text((self.p/'Makefile').read_text().replace('-O0','-include unknown.h'))
         with self.assertRaisesRegex(ValueError,'UNSUPPORTED_FLAGS'):scan(self.p)
 
+    def test_nested_include_invalidates_whole_graph(self):
+        # 间接头文件：main.c -> config.h -> nested.h；直接文件 main.c 未改，旧图仍必须失效
+        old=scan(self.p)
+        (self.p/'nested.h').write_text('#define NESTED 1\n')
+        (self.p/'config.h').write_text('#include "nested.h"\n'+(self.p/'config.h').read_text());commit(self.p,'nested include')
+        r=scan(self.p,old)
+        self.assertEqual(r['actual']['main.o'],['config.h','main.c','nested.h'])
+        self.assertEqual(r['refreshed'],['main.o','helper.o'])
+        self.assertEqual(r['reused'],[])
+        self.assertIn(['MISSING','main.o','nested.h'],r['added'])
+        self.assertEqual(len(r['findings']),3)
+
 class Student241880408E8(unittest.TestCase):
     def test_indirect_header_adds_independently_expected_edges(self):
         with tempfile.TemporaryDirectory() as directory:
