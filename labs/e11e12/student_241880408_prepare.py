@@ -19,6 +19,8 @@ def main():
     project = destination / 'repo'
     subprocess.run(['git', 'clone', '--no-hardlinks', str(original / 'repo'), str(project)], check=True)
     subprocess.run(['git', 'checkout', '--detach', source['target']], cwd=project, check=True)
+    subprocess.run(['git', 'config', 'user.name', 'TeachingFixture'], cwd=project, check=True)
+    subprocess.run(['git', 'config', 'user.email', 'fixture@localhost'], cwd=project, check=True)
     helper = project / 'helper.c'
     helper.write_text('int helper(void){return 0+0;}\n')
     body = commit(project, 'student 241880408: equivalent helper expression')
