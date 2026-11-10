@@ -1,0 +1,15 @@
+{
+  "status": "PENDING_PARTNER",
+  "partner": null,
+  "partner_server": null,
+  "joint_job_id": null,
+  "joint_acceptance": null,
+  "completed_scope": "single-student loopback HTTP self-test",
+  "required": [
+    "B组对接人员和运行API的服务器",
+    "共同请求JSON及base/target SHA",
+    "SSH转发健康检查",
+    "真实提交/查询/下载与SHA核对",
+    "双方联调记录和验收确认"
+  ]
+}

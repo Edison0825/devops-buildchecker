@@ -1,0 +1,16 @@
+{
+  "status": "PENDING_GROUP_INPUT",
+  "source_repository": null,
+  "base_commit": null,
+  "target_commit": null,
+  "broken_dockerfile": null,
+  "candidate_source": null,
+  "required": [
+    "真实C/Make项目来源",
+    "两个完整提交SHA及变化说明",
+    "目标提交Dockerfile.broken",
+    "候选Dockerfile及来源",
+    "必要的目标映射/输出适配和新增测试"
+  ],
+  "course_generated_sample_is_not_real_project_acceptance": true
+}
