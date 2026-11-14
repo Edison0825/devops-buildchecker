@@ -31,14 +31,39 @@ def commit(p, msg):
     run(['git','add','.'],p); run(['git','commit','-m',msg],p)
     return run(['git','rev-parse','HEAD'],p).strip()
 
+def make_rules(p):
+    """Explicit rules only: pattern rules and implicit inference stay unsupported."""
+    lines=(p/'Makefile').read_text().splitlines()
+    found={}
+    for index,line in enumerate(lines):
+        m=re.match(r'^([A-Za-z0-9_][\w./+-]*)\s*:\s*([^=]*)$',line)
+        if not m or '%' in line.split(':',1)[0]: continue
+        recipe=[]; j=index+1
+        while j<len(lines) and lines[j].startswith('\t'):
+            recipe.append(lines[j].lstrip('\t')); j+=1
+        found[m[1]]=(m[2].split(),recipe)
+    return found
+
+def compile_pairs(p):
+    """(target, source) for explicit rules compiling exactly one C source into the target."""
+    pairs=[]
+    for target,(deps,recipe) in make_rules(p).items():
+        if target.startswith('.') or target in ('all','clean'): continue
+        sources=[d for d in deps if d.endswith('.c')]
+        if len(sources)!=1 or not recipe: continue
+        text=' '.join(recipe)
+        if re.search(r'-o\s+'+re.escape(target)+r'(\s|$)',text) and ('-c' in text or '-o' in text):
+            pairs.append((target,sources[0]))
+    if not pairs: raise ValueError('UNSUPPORTED_RULE no explicit compile rule with one C source')
+    return pairs
+
 def declarations(p):
     text=(p/'Makefile').read_text()
     variables=dict(re.findall(r'^(\w+)\s*=\s*(.*)$',text,re.M))
+    rules=make_rules(p)
     graph={}
-    for target in ['main.o','helper.o']:
-        m=re.search(r'^'+re.escape(target)+r': ([^\n]*)$',text,re.M)
-        if not m: raise ValueError('UNSUPPORTED_RULE '+target)
-        dep=m[1]
+    for target,_source in compile_pairs(p):
+        dep=' '.join(rules[target][0])
         for _ in range(8):
             dep=re.sub(r'\$\((\w+)\)',lambda x:variables.get(x[1],x[0]),dep)
         if '$' in dep or '%' in dep or '|' in dep: raise ValueError('UNSUPPORTED_DECLARATION')
@@ -47,14 +72,15 @@ def declarations(p):
 
 def scan(p, old=None):
     start=time.perf_counter(); declared,flags=declarations(p)
-    if flags not in ['-O0','-O1','-O0 -DMODE=1']: raise ValueError('UNSUPPORTED_FLAGS')
+    # '' = Makefile defines no CFLAGS, i.e. compiler defaults; still a fully modelled case.
+    if flags not in ['','-O0','-O1','-O0 -DMODE=1']: raise ValueError('UNSUPPORTED_FLAGS')
     # Conservative invalidation: all local preprocessor lines, source set and recipes.
     files={x.name:x.read_text() for x in sorted(p.glob('*')) if x.suffix in ['.c','.h']}
     key={'directives':{n:[l for l in t.splitlines() if l.lstrip().startswith('#')] for n,t in files.items()},
          'recipes':[l for l in (p/'Makefile').read_text().splitlines() if l.startswith('\t')],
          'flags':flags,'compiler':run(['gcc','--version'],p).splitlines()[0]}
     actual={}; refreshed=[]; reused=[]
-    for target,source in [('main.o','main.c'),('helper.o','helper.c')]:
+    for target,source in compile_pairs(p):
         if old and old['key']==key and target in old['actual']:
             actual[target]=old['actual'][target]; reused.append(target)
         else:
@@ -94,9 +120,16 @@ def patch(p,report):
     diff=''.join(difflib.unified_diff(original.splitlines(True),changed.splitlines(True),fromfile='a/Makefile',tofile='b/Makefile'))
     return diff,edits
 
-def validate(p, patchfile, evidence, fail_test=False):
+def validate(p, patchfile, evidence, fail_test=False, link_target='app', expected_output='1',
+             header='config.h', header_after='#define VALUE 2\n', header_expected='2', header_edits=None):
+    """Project-shape aware validation.
+
+    Defaults keep the E8-E10 teaching project (app/config.h/1/2). Real projects pass
+    link_target/expected_output/header so the same checks apply to another layout.
+    """
     evidence.mkdir(parents=True); before=(p/'Makefile').read_bytes()
-    sandbox=evidence/'sandbox'; shutil.copytree(p,sandbox,ignore=shutil.ignore_patterns('.git','*.o','app'))
+    ignore=shutil.ignore_patterns('.git','*.o',link_target)
+    sandbox=evidence/'sandbox'; shutil.copytree(p,sandbox,ignore=ignore)
     run(['git','init','-b','main'],sandbox)
     run(['git','config','user.name','ValidationSandbox'],sandbox)
     run(['git','config','user.email','fixture@localhost'],sandbox)
@@ -105,12 +138,25 @@ def validate(p, patchfile, evidence, fail_test=False):
     try:
         run(['git','apply','--check',str(patchfile.resolve())],sandbox); checks['patch_applies']=True
         run(['git','apply',str(patchfile.resolve())],sandbox)
-        log=run(['make','clean'],sandbox)+run(['make','app'],sandbox);(evidence/'build.log').write_text(log);checks['build']=True
-        output=run(['./app'],sandbox).strip(); checks['test']=output==('99' if fail_test else '1')
+        try: clean=run(['make','clean'],sandbox)
+        except (ValueError,subprocess.TimeoutExpired): clean='(no clean target)\n'
+        log=clean+run(['make',link_target],sandbox);(evidence/'build.log').write_text(log);checks['build']=True
+        output=run(['./'+link_target],sandbox).strip()
+        checks['test']=output==('99' if fail_test else expected_output)
         # Real header-change build checks the originally broken incremental behavior.
-        time.sleep(1.05); (sandbox/'config.h').write_text('#define VALUE 2\n')
-        (evidence/'incremental.log').write_text(run(['make','app'],sandbox))
-        checks['header_change']=run(['./app'],sandbox).strip()=='2'
+        time.sleep(1.05)
+        if header_edits:
+            # Real projects ship large headers: apply targeted replacements instead of
+            # overwriting the whole file (teaches the same "header changed" condition).
+            text=(sandbox/header).read_text()
+            for old,new in header_edits:
+                if old not in text: raise ValueError('HEADER_EDIT_NOT_FOUND: '+old)
+                text=text.replace(old,new,1)
+            (sandbox/header).write_text(text)
+        else:
+            (sandbox/header).write_text(header_after)
+        (evidence/'incremental.log').write_text(run(['make',link_target],sandbox))
+        checks['header_change']=run(['./'+link_target],sandbox).strip()==header_expected
         recheck=scan(sandbox); save(evidence/'recheck.json',recheck)
         checks['no_missing']=not any(f['type']=='MISSING' for f in recheck['findings'])
     except (ValueError,subprocess.TimeoutExpired) as ex: error=str(ex)

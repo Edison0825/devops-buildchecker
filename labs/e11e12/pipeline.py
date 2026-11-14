@@ -53,21 +53,27 @@ def snapshot(repo, revision, dest, logs):
     sha = command(['git','rev-parse','--verify',revision+'^{commit}'], repo, logs/(dest.name+'-resolve.log'))
     command(['git','clone','--no-hardlinks','--no-checkout',str(repo),str(dest)], repo, logs/(dest.name+'-clone.log'))
     command(['git','checkout','--detach',sha], dest, logs/(dest.name+'-checkout.log'))
-    # E8-E10 profile; fail early instead of silently ignoring other targets.
-    names = {p.name for p in dest.glob('*.c')}
-    if names != {'main.c','helper.c'} or not (dest/'config.h').is_file():
-        raise Failure('UNSUPPORTED_PROJECT', 'Expected main.c/helper.c/config.h and explicit Make rules')
+    # Explicit compile rules are required; file and target names are no longer fixed
+    # to main.c/helper.c, so a real C/Make project can be plugged in unchanged.
+    from lab import compile_pairs
+    if not (dest/'Makefile').is_file() or not list(dest.glob('*.c')):
+        raise Failure('UNSUPPORTED_PROJECT', 'Expected C sources and a Makefile')
+    try:
+        compile_pairs(dest)
+    except ValueError as exc:
+        raise Failure('UNSUPPORTED_PROJECT', str(exc))
     return sha
 
-def full(project, folder):
+def full(project, folder, build_command='make app', clean_command='make clean'):
     from buildchecker.fullcheck import full_check
-    report = full_check(project, folder)
+    report = full_check(project, folder, clean_command=clean_command, build_command=build_command)
     if report.get('status') != 'SUCCEEDED':
         raise Failure('FULL_CHECK_FAILED', str(report.get('error', report.get('error_code'))))
     return report
 
-def normalized(findings):
-    return sorted((f['type'],f['target'],f['dependency']) for f in findings if f['target'] in ('main.o','helper.o'))
+def normalized(findings, targets=None):
+    wanted = set(targets if targets is not None else ('main.o','helper.o'))
+    return sorted((f['type'],f['target'],f['dependency']) for f in findings if f['target'] in wanted)
 
 def execute(request, out, job_id=None):
     job_id = job_id or 'job-'+uuid.uuid4().hex
@@ -77,6 +83,10 @@ def execute(request, out, job_id=None):
     out.mkdir(parents=True, exist_ok=True)
     result = {'schema_version':'e11e12-1','job_id':job_id,'trace_id':trace_id,'status':'RUNNING','stages':[]}
     save(out/'request.json',request)
+    # Real projects rarely name their default goal "app"; the analyzer command is part
+    # of the request so the teaching defaults stay exactly as before.
+    build_command=request.get('build_command','make app')
+    clean_command=request.get('clean_command','make clean')
     def stage(name, commit, payload, files=()):
         envelope = {'schema_version':'e11e12-1','job_id':job_id,'trace_id':trace_id,'kind':name,
                     'commit':commit,'status':'SUCCEEDED','data':payload,
@@ -103,10 +113,10 @@ def execute(request, out, job_id=None):
                 raise Failure('DRAFT_FAILED',draft.get('error','Inspect draft-build logs'))
             stage('draft',target_sha,draft,[out/'draft-build/result.json'])
         if mode in ('e11-a','e12'):
-            base_full=full(base,out/'baseline-full')
+            base_full=full(base,out/'baseline-full',build_command,clean_command)
             old=scan(base)
             edges=json.loads((out/'baseline-full/actual-graph.json').read_text())
-            projected={t:sorted({e['dependency'] for e in edges if e['target']==t}) for t in ('main.o','helper.o')}
+            projected={t:sorted({e['dependency'] for e in edges if e['target']==t}) for t in sorted(old['actual'])}
             if projected != old['actual']:
                 raise Failure('GRAPH_MISMATCH','BuildChecker baseline differs from GCC observations')
             old['actual']=projected
@@ -115,8 +125,9 @@ def execute(request, out, job_id=None):
             check_envelope(baseline,base_sha,'full-check')
             current=scan(target,old)
             save(out/'incremental-report.json',current)
-            reference=full(target,out/'target-full')
-            if normalized(reference['findings']) != normalized(current['findings']):
+            reference=full(target,out/'target-full',build_command,clean_command)
+            targets=sorted(current['actual'])
+            if normalized(reference['findings'],targets) != normalized(current['findings'],targets):
                 raise Failure('FINDINGS_MISMATCH','Incremental/full object-target findings differ')
             md_envelope=stage('incremental-check',target_sha,current,[out/'incremental-report.json',out/'target-full/findings.json'])
         else:
@@ -141,10 +152,16 @@ def execute(request, out, job_id=None):
             patchfile=out/'candidate.patch';patchfile.write_text(diff,encoding='utf-8')
             save(out/'repair-plan.json',edits)
             stage('repair',target_sha,{'edits':edits,'input_report':artifact(out/(md_envelope['kind']+'.json'),out,job_id)},[patchfile,out/'repair-plan.json'])
-            verdict=validate(target,patchfile,out/'validation')
+            verdict=validate(target,patchfile,out/'validation',
+                             link_target=request.get('link_target','app'),
+                             expected_output=request.get('expected_output','1'),
+                             header=request.get('header','config.h'),
+                             header_after=request.get('header_after','#define VALUE 2\n'),
+                             header_expected=request.get('header_expected','2'),
+                             header_edits=request.get('header_edits'))
             if not verdict['accepted']:
                 raise Failure('REPAIR_REJECTED',str(verdict))
-            final=full(target,out/'final-full')
+            final=full(target,out/'final-full',build_command,clean_command)
             if any(f['type']=='MISSING' for f in final['findings']):
                 (target/'Makefile').write_bytes(before)
                 raise Failure('RECHECK_FAILED','MD remains; working-copy declaration restored')
