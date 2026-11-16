@@ -1,0 +1,5 @@
+实验,数据来源,仓库,base_commit,target_commit,job_id,trace_id,报告路径,补丁路径,结果
+e11_a_real,antirez/sds组内本地fork；241880536整理；241880408个人复现,https://github.com/antirez/sds,f103947b89737ef40c5920a44cfc1df7911b6dfe,3d658f2049015bba04df8d425d378fd196b15702,job-468b977ad53146d09f09f78f43966b4c,trace-376d23a68fc94db39ba25fe4408a5428,work/e11-a-real-01/result.json,-,SUCCEEDED
+e12_real,antirez/sds组内本地fork；241880536整理；241880408个人复现,https://github.com/antirez/sds,f103947b89737ef40c5920a44cfc1df7911b6dfe,3d658f2049015bba04df8d425d378fd196b15702,job-89718ffa003e4761bfd4360ffd411ed7,trace-53432d4aa34647dbbcc980efd256454e,work/e12-real-01/result.json,work/e12-real-01/candidate.patch,SUCCEEDED
+e12_real_api,antirez/sds组内本地fork；241880536整理；241880408个人复现,https://github.com/antirez/sds,f103947b89737ef40c5920a44cfc1df7911b6dfe,3d658f2049015bba04df8d425d378fd196b15702,job-bd478e6c88a34ee894d20679195b76d0,trace-7ca72641aa9540199bab4a2e128d4523,work/api-jobs/job-bd478e6c88a34ee894d20679195b76d0/evidence/result.json,work/api-jobs/job-bd478e6c88a34ee894d20679195b76d0/evidence/candidate.patch,SUCCEEDED
+B组实际联调,对方参与待确认,-,-,-,-,-,-,-,PENDING_PARTNER

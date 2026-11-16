@@ -1,16 +1,85 @@
 {
-  "status": "PENDING_GROUP_INPUT",
-  "source_repository": null,
-  "base_commit": null,
-  "target_commit": null,
-  "broken_dockerfile": null,
-  "candidate_source": null,
-  "required": [
-    "真实C/Make项目来源",
-    "两个完整提交SHA及变化说明",
-    "目标提交Dockerfile.broken",
-    "候选Dockerfile及来源",
-    "必要的目标映射/输出适配和新增测试"
-  ],
-  "course_generated_sample_is_not_real_project_acceptance": true
+  "status": "PERSONAL_REPRODUCTION_VERIFIED",
+  "source_repository": "https://github.com/antirez/sds",
+  "base_commit": "f103947b89737ef40c5920a44cfc1df7911b6dfe",
+  "target_commit": "3d658f2049015bba04df8d425d378fd196b15702",
+  "commits_are_upstream_native": false,
+  "dataset_prepared_by": "241880536",
+  "personal_reproduction_by": "241880408 (AI assisted)",
+  "broken_dockerfile": "data/real-project/Dockerfile.broken",
+  "candidate_source": "/root/devops-students/241880536/buildchecker/data/real-candidate.Dockerfile",
+  "candidate_sha256": "20717e7aa9cc28bb5e6640db32aa9000f3fd2b1a15a469bb731fe7c4af4741f2",
+  "source_tarball_sha256_reported_by_group": "623b12adf52efb6fe7eaff28f1be16bbd142813cc760658957483c0c6805fd95",
+  "source_tarball_hash_independently_verified_this_run": false,
+  "request": "data/real-request.json",
+  "e11_a": {
+    "path": "work/e11-a-real-01",
+    "mode": "e11-a",
+    "status": "SUCCEEDED",
+    "job_id": "job-468b977ad53146d09f09f78f43966b4c",
+    "trace_id": "trace-376d23a68fc94db39ba25fe4408a5428",
+    "base": "f103947b89737ef40c5920a44cfc1df7911b6dfe",
+    "target": "3d658f2049015bba04df8d425d378fd196b15702",
+    "artifact_count": 79,
+    "incremental_findings": [
+      {
+        "type": "MISSING",
+        "target": "sds-test",
+        "dependency": "sdslog.h"
+      }
+    ],
+    "refreshed": [
+      "sds-test"
+    ],
+    "reused": []
+  },
+  "e12": {
+    "path": "work/e12-real-01",
+    "mode": "e12",
+    "status": "SUCCEEDED",
+    "job_id": "job-89718ffa003e4761bfd4360ffd411ed7",
+    "trace_id": "trace-53432d4aa34647dbbcc980efd256454e",
+    "base": "f103947b89737ef40c5920a44cfc1df7911b6dfe",
+    "target": "3d658f2049015bba04df8d425d378fd196b15702",
+    "artifact_count": 149,
+    "incremental_findings": [
+      {
+        "type": "MISSING",
+        "target": "sds-test",
+        "dependency": "sdslog.h"
+      }
+    ],
+    "refreshed": [
+      "sds-test"
+    ],
+    "reused": [],
+    "final_findings": [],
+    "validation": {
+      "accepted": true,
+      "checks": {
+        "patch_applies": true,
+        "build": true,
+        "test": true,
+        "header_change": true,
+        "no_missing": true
+      },
+      "error": null,
+      "source_unchanged": false,
+      "rollback": false
+    },
+    "patch_sha256": "6774f98f21cc1a9c596243fd7f2d238f3c832284ab03645a46f22680b2891764",
+    "program_tests": 46,
+    "header_change_verified": true
+  },
+  "api_selftest": {
+    "job_id": "job-bd478e6c88a34ee894d20679195b76d0",
+    "trace_id": "trace-7ca72641aa9540199bab4a2e128d4523",
+    "result": "work/e12-real-api-01/acceptance.json"
+  },
+  "complete_course_acceptance": false,
+  "remaining": [
+    "B组实际联调",
+    "组长review合并",
+    "学生确认"
+  ]
 }

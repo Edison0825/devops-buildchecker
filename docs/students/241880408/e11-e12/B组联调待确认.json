@@ -11,5 +11,10 @@
     "SSH转发健康检查",
     "真实提交/查询/下载与SHA核对",
     "双方联调记录和验收确认"
-  ]
+  ],
+  "last_checked": "2026-11-16",
+  "available_real_request": "data/real-request.json",
+  "latest_personal_selftest": "work/e12-real-api-01/acceptance.json",
+  "group_record": "PR #15 is independent-terminal verification; PR #17 explicitly says no B-group acceptance",
+  "actual_B_group_participation_verified": false
 }
