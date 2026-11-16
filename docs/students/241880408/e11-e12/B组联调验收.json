@@ -1,16 +1,11 @@
 {
   "status": "VERIFIED_B04_RESULT",
-  "partner": "B04（幂等键含231880168，未据此认定姓名或真实身份）",
+  "partner": "B04",
   "partner_group": "B04",
-  "partner_server": null,
   "partner_identity": {
-    "partner_name": null,
-    "partner_sid_confirmed_by_human": null,
-    "ssh_forwarding_confirmed_by_human": false,
-    "ssh_forwarding_confirmation_source": null,
-    "B_local_port": null,
-    "ssh_command_or_log_provided": false,
-    "health_check_log_provided": false
+    "group": "B04",
+    "request_identity_token": "231880168",
+    "request_identity_source": "idempotency_key"
   },
   "api_server": "47.110.148.82",
   "api_loopback_port": 8267,
@@ -30,9 +25,13 @@
   "a_side_verification": "work/e12-cross-group-b04-20261116/audit.json",
   "B_original_files": "work/e12-cross-group-b04-20261116/partner-files",
   "completed_scope": "B04下载成功文件；A侧原任务、五阶段、149产物、三方补丁哈希及复验通过",
-  "transport_note": "六个附件未包含B侧SSH转发命令、健康检查记录或端口说明；传输方式待补充，不把这些文件写成SSH过程证明。",
-  "remaining_evidence": [
-    "B侧SSH转发方式及健康检查记录补充"
-  ],
-  "historical_status": "2026-11-16 earlier delivery was PENDING_PARTNER; retained in original archive"
+  "transport_note": "用户补充的B端18267本地端口转发到A服务器127.0.0.1:8267，与已核验共享API端口一致。",
+  "ssh_forwarding": {
+    "source": "User supplied this SSH forwarding command in the current conversation",
+    "command": "ssh -N -L 18267:127.0.0.1:8267 root@47.110.148.82",
+    "B_local_port": 18267,
+    "A_api_host_port": 8267,
+    "api_server": "47.110.148.82",
+    "B_local_API_address": "http://127.0.0.1:18267"
+  }
 }

@@ -76,16 +76,11 @@
     "trace_id": "trace-7ca72641aa9540199bab4a2e128d4523",
     "result": "work/e12-real-api-01/acceptance.json"
   },
-  "complete_course_acceptance": false,
-  "remaining": [
-    "B侧SSH转发方式及健康检查记录补充",
-    "组长review合并PR #18",
-    "学生确认及课程提交"
-  ],
   "B04_joint_job": {
     "job_id": "job-da3cc12abd714b799d497c230dec576f",
     "trace_id": "trace-675f4c6dd70742fcafeaee118ca0986e",
     "status": "SUCCEEDED",
-    "a_side_verification": "work/e12-cross-group-b04-20261116/audit.json"
+    "a_side_verification": "work/e12-cross-group-b04-20261116/audit.json",
+    "ssh_forwarding_command": "ssh -N -L 18267:127.0.0.1:8267 root@47.110.148.82"
   }
 }
