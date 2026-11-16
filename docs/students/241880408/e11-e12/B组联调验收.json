@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED_B04_RESULT",
+  "partner": "B04",
+  "partner_group": "B04",
+  "partner_identity": {
+    "group": "B04",
+    "request_identity_token": "231880168",
+    "request_identity_source": "idempotency_key"
+  },
+  "api_server": "47.110.148.82",
+  "api_loopback_port": 8267,
+  "api_workspace": "/root/devops-buildchecker",
+  "api_owner_image": "course-e11e12:241880267",
+  "joint_job_id": "job-da3cc12abd714b799d497c230dec576f",
+  "joint_trace_id": "trace-675f4c6dd70742fcafeaee118ca0986e",
+  "joint_acceptance": "SUCCEEDED",
+  "last_checked": "2026-11-16",
+  "actual_B_group_participation_verified": true,
+  "participation_confirmation_source": "用户提供B04成功反馈和六份客户端原始文件；A侧现有任务与逐文件哈希一致",
+  "input_sha256": "80ee122bdf19a69f892cdadcc53a15b9522d44f6f9c1679fff93ca6504cd8284",
+  "patch_sha256": "6774f98f21cc1a9c596243fd7f2d238f3c832284ab03645a46f22680b2891764",
+  "base_commit": "f103947b89737ef40c5920a44cfc1df7911b6dfe",
+  "target_commit": "3d658f2049015bba04df8d425d378fd196b15702",
+  "artifact_count_verified_on_server": 149,
+  "a_side_verification": "work/e12-cross-group-b04-20261116/audit.json",
+  "B_original_files": "work/e12-cross-group-b04-20261116/partner-files",
+  "completed_scope": "B04下载成功文件；A侧原任务、五阶段、149产物、三方补丁哈希及复验通过",
+  "transport_note": "用户补充的B端18267本地端口转发到A服务器127.0.0.1:8267，与已核验共享API端口一致。",
+  "ssh_forwarding": {
+    "source": "User supplied this SSH forwarding command in the current conversation",
+    "command": "ssh -N -L 18267:127.0.0.1:8267 root@47.110.148.82",
+    "B_local_port": 18267,
+    "A_api_host_port": 8267,
+    "api_server": "47.110.148.82",
+    "B_local_API_address": "http://127.0.0.1:18267"
+  }
+}
