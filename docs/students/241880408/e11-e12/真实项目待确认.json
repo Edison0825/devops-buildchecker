@@ -78,8 +78,14 @@
   },
   "complete_course_acceptance": false,
   "remaining": [
-    "B组实际联调",
-    "组长review合并",
-    "学生确认"
-  ]
+    "B侧SSH转发方式及健康检查记录补充",
+    "组长review合并PR #18",
+    "学生确认及课程提交"
+  ],
+  "B04_joint_job": {
+    "job_id": "job-da3cc12abd714b799d497c230dec576f",
+    "trace_id": "trace-675f4c6dd70742fcafeaee118ca0986e",
+    "status": "SUCCEEDED",
+    "a_side_verification": "work/e12-cross-group-b04-20261116/audit.json"
+  }
 }
