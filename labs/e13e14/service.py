@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import traceback
@@ -15,6 +16,14 @@ from buildchecker.fullcheck import full_check
 
 ROOT = Path('/course').resolve()
 ROLE = os.environ['E14_ROLE']
+if os.name == 'posix':
+    os.environ.setdefault('GIT_CONFIG_GLOBAL', '/tmp/e14-gitconfig')
+
+
+def allow_worktree(path):
+    if os.name == 'posix':
+        subprocess.run(['git', 'config', '--global', '--add', 'safe.directory', str(path)],
+                       check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def local(value, area='work'):
@@ -37,6 +46,7 @@ def save(path, data):
 def run(data):
     project = local(data['project'])
     out = local(data['out'])
+    allow_worktree(project)
     if out.exists():
         raise ValueError('Output already exists')
     if ROLE == 'draft':
@@ -55,6 +65,7 @@ def run(data):
         return {'status': 'SUCCEEDED', 'result': result, 'artifact': str(out / 'findings.json')}
     if ROLE == 'echecker':
         base = local(data['base'])
+        allow_worktree(base)
         baseline_graph = local(data['baseline_graph'])
         target_findings = local(data['target_findings'])
         old = scan(base)

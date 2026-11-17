@@ -39,7 +39,9 @@ def service_module():
 
 class ProjectProfileTests(unittest.TestCase):
     def setUp(self):
-        temp = tempfile.TemporaryDirectory()
+        temp_root = PACKAGE.parents[1] / 'work' / 'e13e14-test-tmp'
+        temp_root.mkdir(parents=True, exist_ok=True)
+        temp = tempfile.TemporaryDirectory(dir=temp_root)
         self.addCleanup(temp.cleanup)
         self.root = Path(temp.name).resolve()
         self.service = service_module()
