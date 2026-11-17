@@ -53,8 +53,8 @@ def snapshot(repo, revision, target, logs):
     command(['git', 'clone', '--no-hardlinks', '--no-checkout', str(repo), str(target)], repo,
             logs / (target.name + '-clone.log'))
     command(['git', 'checkout', '--detach', head], target, logs / (target.name + '-checkout.log'))
-    if {p.name for p in target.glob('*.c')} != {'main.c', 'helper.c'} or not (target / 'config.h').is_file():
-        raise ValueError('Unsupported teaching project profile')
+    if not (target / 'Makefile').is_file() or not list(target.glob('*.c')):
+        raise ValueError('Expected C sources and an explicit Makefile')
     return head
 
 
@@ -92,8 +92,12 @@ def execute(request, out):
     save(out / 'request.json', request)
 
     def payload(project, folder, **extra):
+        options = {name: request[name] for name in (
+            'build_command', 'clean_command', 'link_target', 'expected_output',
+            'header', 'header_after', 'header_expected', 'header_edits',
+        ) if name in request}
         return {'project': container_path(project), 'out': container_path(folder),
-                'job_id': job, 'trace_id': trace, **extra}
+                'job_id': job, 'trace_id': trace, **options, **extra}
 
     def stage(name, commit, data):
         item = {'name': name, 'commit': commit, 'job_id': job, 'trace_id': trace, 'status': 'SUCCEEDED', 'data': data}

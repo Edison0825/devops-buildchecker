@@ -47,7 +47,9 @@ def run(data):
             raise ValueError('DRAFT_' + result['status'] + ': ' + str(result.get('error')))
         return {'status': 'SUCCEEDED', 'result': result, 'artifact': str(out / 'result.json')}
     if ROLE == 'buildchecker':
-        result = full_check(project, out)
+        result = full_check(project, out,
+                            build_command=data.get('build_command', 'make app'),
+                            clean_command=data.get('clean_command', 'make clean'))
         if result['status'] != 'SUCCEEDED':
             raise ValueError('BUILDCHECKER_' + result['status'] + ': ' + str(result.get('error')))
         return {'status': 'SUCCEEDED', 'result': result, 'artifact': str(out / 'findings.json')}
@@ -58,14 +60,14 @@ def run(data):
         old = scan(base)
         graph = json.loads(baseline_graph.read_text())
         projected = {t: sorted({e['dependency'] for e in graph if e['target'] == t})
-                     for t in ('main.o', 'helper.o')}
+                     for t in sorted(old['actual'])}
         if old['actual'] != projected:
             raise ValueError('Baseline BuildChecker/GCC graph mismatch')
         old['actual'] = projected
         current = scan(project, old)
         reference = json.loads(target_findings.read_text())
         normalize = lambda fs: sorted((x['type'], x['target'], x['dependency']) for x in fs
-                                      if x['target'] in ('main.o', 'helper.o'))
+                                      if x['target'] in current['actual'])
         if reference['status'] != 'SUCCEEDED' or normalize(current['findings']) != normalize(reference['findings']):
             raise ValueError('Incremental/full findings mismatch')
         out.mkdir(parents=True)
@@ -95,7 +97,13 @@ def run(data):
         candidate = out / 'candidate.patch'
         candidate.write_text(diff, encoding='utf-8')
         save(out / 'repair-plan.json', edits)
-        verdict = validate(project, candidate, out / 'validation')
+        verdict = validate(project, candidate, out / 'validation',
+                           link_target=data.get('link_target', 'app'),
+                           expected_output=data.get('expected_output', '1'),
+                           header=data.get('header', 'config.h'),
+                           header_after=data.get('header_after', '#define VALUE 2\n'),
+                           header_expected=data.get('header_expected', '2'),
+                           header_edits=data.get('header_edits'))
         if not verdict['accepted']:
             raise ValueError('Patch rejected: ' + str(verdict))
         return {'status': 'SUCCEEDED', 'patch': str(candidate),
