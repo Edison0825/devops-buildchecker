@@ -1,0 +1,76 @@
+{
+  "status": "SUCCEEDED",
+  "detector": "DRAFT_TEACHING_REPLAY",
+  "trace_id": "e6-b-75f4f36376ba4ef9866258fc201cb895",
+  "candidate_source": "Manual model response replay; no model/API call in this command",
+  "candidate_sha256": "20717e7aa9cc28bb5e6640db32aa9000f3fd2b1a15a469bb731fe7c4af4741f2",
+  "attempts": [
+    {
+      "iteration": 1,
+      "tag": "e6-draft-replay:75f4f36376ba4ef9866258fc201cb895-1",
+      "command": [
+        "docker",
+        "build",
+        "--progress=plain",
+        "-f",
+        "/course/work/B04-SDS-receipt-dbjA4kse/run/draft-build/iter-01/Dockerfile",
+        "-t",
+        "e6-draft-replay:75f4f36376ba4ef9866258fc201cb895-1",
+        "/course/work/B04-SDS-receipt-dbjA4kse/run/draft-build/project"
+      ],
+      "build_exit_code": 1,
+      "failure_class": "MISSING_MAKE"
+    },
+    {
+      "iteration": 2,
+      "tag": "e6-draft-replay:75f4f36376ba4ef9866258fc201cb895-2",
+      "command": [
+        "docker",
+        "build",
+        "--progress=plain",
+        "-f",
+        "/course/work/B04-SDS-receipt-dbjA4kse/run/draft-build/iter-02/Dockerfile",
+        "-t",
+        "e6-draft-replay:75f4f36376ba4ef9866258fc201cb895-2",
+        "/course/work/B04-SDS-receipt-dbjA4kse/run/draft-build/project"
+      ],
+      "build_exit_code": 0,
+      "image_id": "sha256:cf0fb69481a219795c6f1afb7fe53026d8629d5aca12b279b5c14e53bfa5e472"
+    }
+  ],
+  "input_sha256": {
+    "Changelog": "9c4d5eb10e7890c2197bb35d47668bb9ac7cb7c217f83a63564a8bf5cd7effb9",
+    "Dockerfile.broken": "7c555441453b263beadd120ed8953dd9ced523b4fc8a74a433ea553f33ef903d",
+    "LICENSE": "bb0d0d505009fdf584b0f44dbb62562eebada497d53d726cd2e940ada512dc16",
+    "Makefile": "0f357a88bb26937731b691d9be21c1bfb3d90675435d7a8e139bde8da7b3c820",
+    "README.md": "5c6164b379e3a4cfbf784e89dbf780bbcf5e47d359562239d6674b211a580d19",
+    "sds.c": "c314716e302744b87ed54f3fee6d7812af7becfba7ba4dbe17cb1095b45f5d62",
+    "sds.h": "1fca79237a549bff08c8e31d10007b48f7a290ce872af35863a8332d689c2ca1",
+    "sdsalloc.h": "3f99fdb0bfc77ca6f68a513555c85a8a34a81eefa051efff1d005b5333e60da0",
+    "sdslog.h": "480290e5ac553816e2320a19bf61837e99d05d742daaf5b3774ab1ce10432b4c",
+    "testhelp.h": "8cb1b652da0f106374b284cb10e4d27f10959d3082d703d9c852fe0c4ad6bd44"
+  },
+  "verification": {
+    "command": [
+      "docker",
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--cpus",
+      "1",
+      "--memory",
+      "128m",
+      "--pids-limit",
+      "64",
+      "--cidfile",
+      "/course/work/B04-SDS-receipt-dbjA4kse/run/draft-build/verify-container-id.txt",
+      "sha256:cf0fb69481a219795c6f1afb7fe53026d8629d5aca12b279b5c14e53bfa5e472"
+    ],
+    "exit_code": 0,
+    "expected_output": "1 - Create a string and obtain the length: PASSED\n2 - Create a string with specified length: PASSED\n3 - Strings concatenation: PASSED\n4 - sdscpy() against an originally longer string: PASSED\n5 - sdscpy() against an originally shorter string: PASSED\n6 - sdscatprintf() seems working in the base case: PASSED\n7 - sdscatprintf() seems working with \\0 inside of result: PASSED\n8 - sdscatprintf() can print 1MB: PASSED\n9 - sdscatfmt() seems working in the base case: PASSED\n[--Hello Hi! World -9223372036854775808,9223372036854775807--]\n10 - sdscatfmt() seems working with unsigned numbers: PASSED\n11 - sdstrim() works when all chars match: PASSED\n12 - sdstrim() works when a single char remains: PASSED\n13 - sdstrim() correctly trims characters: PASSED\n14 - sdsrange(...,1,1): PASSED\n15 - sdsrange(...,1,-1): PASSED\n16 - sdsrange(...,-2,-1): PASSED\n17 - sdsrange(...,2,1): PASSED\n18 - sdsrange(...,1,100): PASSED\n19 - sdsrange(...,100,100): PASSED\n20 - sdscmp(foo,foa): PASSED\n21 - sdscmp(bar,bar): PASSED\n22 - sdscmp(bar,bar): PASSED\n23 - sdscatrepr(...data...): PASSED\n24 - sdsnew() free/len buffers: PASSED\n25 - sdsMakeRoomFor() len: PASSED\n26 - sdsMakeRoomFor() free: PASSED\n27 - sdsMakeRoomFor() len: PASSED\n28 - sdsMakeRoomFor() free: PASSED\n29 - sdsMakeRoomFor() len: PASSED\n30 - sdsMakeRoomFor() free: PASSED\n31 - sdsMakeRoomFor() len: PASSED\n32 - sdsMakeRoomFor() free: PASSED\n33 - sdsMakeRoomFor() len: PASSED\n34 - sdsMakeRoomFor() free: PASSED\n35 - sdsMakeRoomFor() len: PASSED\n36 - sdsMakeRoomFor() free: PASSED\n37 - sdsMakeRoomFor() len: PASSED\n38 - sdsMakeRoomFor() free: PASSED\n39 - sdsMakeRoomFor() len: PASSED\n40 - sdsMakeRoomFor() free: PASSED\n41 - sdsMakeRoomFor() len: PASSED\n42 - sdsMakeRoomFor() free: PASSED\n43 - sdsMakeRoomFor() len: PASSED\n44 - sdsMakeRoomFor() free: PASSED\n45 - sdsMakeRoomFor() content: PASSED\n46 - sdsMakeRoomFor() final length: PASSED\n46 tests, 46 passed, 0 failed",
+    "actual_output": "1 - Create a string and obtain the length: PASSED\n2 - Create a string with specified length: PASSED\n3 - Strings concatenation: PASSED\n4 - sdscpy() against an originally longer string: PASSED\n5 - sdscpy() against an originally shorter string: PASSED\n6 - sdscatprintf() seems working in the base case: PASSED\n7 - sdscatprintf() seems working with \\0 inside of result: PASSED\n8 - sdscatprintf() can print 1MB: PASSED\n9 - sdscatfmt() seems working in the base case: PASSED\n[--Hello Hi! World -9223372036854775808,9223372036854775807--]\n10 - sdscatfmt() seems working with unsigned numbers: PASSED\n11 - sdstrim() works when all chars match: PASSED\n12 - sdstrim() works when a single char remains: PASSED\n13 - sdstrim() correctly trims characters: PASSED\n14 - sdsrange(...,1,1): PASSED\n15 - sdsrange(...,1,-1): PASSED\n16 - sdsrange(...,-2,-1): PASSED\n17 - sdsrange(...,2,1): PASSED\n18 - sdsrange(...,1,100): PASSED\n19 - sdsrange(...,100,100): PASSED\n20 - sdscmp(foo,foa): PASSED\n21 - sdscmp(bar,bar): PASSED\n22 - sdscmp(bar,bar): PASSED\n23 - sdscatrepr(...data...): PASSED\n24 - sdsnew() free/len buffers: PASSED\n25 - sdsMakeRoomFor() len: PASSED\n26 - sdsMakeRoomFor() free: PASSED\n27 - sdsMakeRoomFor() len: PASSED\n28 - sdsMakeRoomFor() free: PASSED\n29 - sdsMakeRoomFor() len: PASSED\n30 - sdsMakeRoomFor() free: PASSED\n31 - sdsMakeRoomFor() len: PASSED\n32 - sdsMakeRoomFor() free: PASSED\n33 - sdsMakeRoomFor() len: PASSED\n34 - sdsMakeRoomFor() free: PASSED\n35 - sdsMakeRoomFor() len: PASSED\n36 - sdsMakeRoomFor() free: PASSED\n37 - sdsMakeRoomFor() len: PASSED\n38 - sdsMakeRoomFor() free: PASSED\n39 - sdsMakeRoomFor() len: PASSED\n40 - sdsMakeRoomFor() free: PASSED\n41 - sdsMakeRoomFor() len: PASSED\n42 - sdsMakeRoomFor() free: PASSED\n43 - sdsMakeRoomFor() len: PASSED\n44 - sdsMakeRoomFor() free: PASSED\n45 - sdsMakeRoomFor() content: PASSED\n46 - sdsMakeRoomFor() final length: PASSED\n46 tests, 46 passed, 0 failed\n",
+    "output_matches": true
+  },
+  "elapsed_ms": 801
+}
