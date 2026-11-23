@@ -49,3 +49,7 @@ Issue 链接：https://github.com/Edison0825/devops-buildchecker/issues/25
 - 原始仓库修复前后 SHA 核对：固定样例 base/target 提交未变；`data/integration-sample/repo` 的 `make-db.txt` 声明与 target 提交一致
 - CI 门禁链接与审查人：见 PR 检查列表（`e13e14-gate` 等四条）
 - 剩余风险：若某个项目的链接目标与对象目标同名（极少见），`object_targets` 会把它当对象目标；此时以 `compile_pairs` 的结果为准，属既有约定
+
+### 附带修复（CI 首次运行暴露）
+
+PR #26 首轮 CI 的 `four-services` 作业失败：`COMMAND_FAILED ['git','rev-parse','HEAD'] fatal: detected dubious ownership in repository at '/course/work/ci-e14/base-project'`。原因是四容器以 root 运行、`/course` 由 runner（uid 1001）持有，git 拒绝跨用户仓库。修复：在 `labs/e13e14/compose.yaml` 的公共环境里加 `GIT_CONFIG_COUNT=1`、`GIT_CONFIG_KEY_0=safe.directory`、`GIT_CONFIG_VALUE_0=*`（四个服务都继承），并把 `PYTHONPATH` 补上 `/course/labs/e13e14`。修复后 `four-services` 通过（run 45157647200 / 45157660099）。该问题只出现在 CI 的跨用户挂载场景，本机 `--user $(id -u):$(id -g)` 不触发。
