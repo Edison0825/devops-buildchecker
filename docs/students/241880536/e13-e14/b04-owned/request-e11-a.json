@@ -1,0 +1,9 @@
+{
+  "mode": "e11-a",
+  "repo": "/course/data/b04-owned/repo",
+  "base": "dcb12146508651c7085b98a353c22724a94fbbe1",
+  "target": "7ecb72dae9da893b589fb79958ce2cadaaac9ec5",
+  "candidate": "/course/data/b04-owned/candidate.Dockerfile",
+  "expected_output": "1",
+  "build_timeout": 600
+}

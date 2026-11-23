@@ -1,0 +1,94 @@
+{
+  "schema_version": "e8e10-1",
+  "profile": "GCC_LOCAL_HEADERS_EXPLICIT_MAKE",
+  "commit": "7ecb72dae9da893b589fb79958ce2cadaaac9ec5",
+  "key": {
+    "directives": {
+      "b04-settings.h": [
+        "#define B04_BONUS 0"
+      ],
+      "config.h": [
+        "#define VALUE 1"
+      ],
+      "extra.h": [
+        "#define EXTRA 0"
+      ],
+      "helper.c": [
+        "#include \"b04-settings.h\""
+      ],
+      "main.c": [
+        "#include <stdio.h>",
+        "#include \"config.h\""
+      ],
+      "unused.h": []
+    },
+    "recipes": [
+      "\tgcc main.o helper.o -o app",
+      "\tgcc $(CFLAGS) -c main.c -o main.o",
+      "\tgcc $(CFLAGS) -c helper.c -o helper.o",
+      "\trm -f main.o helper.o app"
+    ],
+    "flags": "-O0",
+    "compiler": "gcc (Debian 14.2.0-19) 14.2.0"
+  },
+  "actual": {
+    "main.o": [
+      "config.h",
+      "main.c"
+    ],
+    "helper.o": [
+      "b04-settings.h",
+      "helper.c"
+    ]
+  },
+  "declared": {
+    "main.o": [
+      "main.c",
+      "unused.h"
+    ],
+    "helper.o": [
+      "helper.c"
+    ]
+  },
+  "findings": [
+    {
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h"
+    },
+    {
+      "type": "REDUNDANT",
+      "target": "main.o",
+      "dependency": "unused.h"
+    },
+    {
+      "type": "MISSING",
+      "target": "helper.o",
+      "dependency": "b04-settings.h"
+    }
+  ],
+  "added": [
+    [
+      "MISSING",
+      "helper.o",
+      "b04-settings.h"
+    ],
+    [
+      "MISSING",
+      "main.o",
+      "config.h"
+    ],
+    [
+      "REDUNDANT",
+      "main.o",
+      "unused.h"
+    ]
+  ],
+  "resolved": [],
+  "refreshed": [
+    "main.o",
+    "helper.o"
+  ],
+  "reused": [],
+  "elapsed_s": 0.02484969701617956
+}

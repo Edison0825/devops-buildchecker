@@ -1,0 +1,134 @@
+{
+  "schema_version": "e11e12-1",
+  "job_id": "job-5529ce34781145d89e9052796197e04d",
+  "trace_id": "trace-f1a247b749ea41cdbc12cfe7c7ef84ef",
+  "kind": "fixed-md",
+  "commit": "3d658f2049015bba04df8d425d378fd196b15702",
+  "status": "SUCCEEDED",
+  "data": {
+    "schema_version": "e8e10-1",
+    "profile": "GCC_LOCAL_HEADERS_EXPLICIT_MAKE",
+    "commit": "3d658f2049015bba04df8d425d378fd196b15702",
+    "key": {
+      "directives": {
+        "sds.c": [
+          "#include <stdio.h>",
+          "#include <stdlib.h>",
+          "#include <string.h>",
+          "#include <ctype.h>",
+          "#include <assert.h>",
+          "#include <limits.h>",
+          "#include \"sds.h\"",
+          "#include \"sdsalloc.h\"",
+          "#include \"testhelp.h\" /* analyzer-visible include (group fork) */",
+          "#include \"sdslog.h\"",
+          "#if (LONG_MAX == LLONG_MAX)",
+          "#else",
+          "#endif",
+          "#define SDS_LLSTR_SIZE 21",
+          "#if defined(SDS_TEST_MAIN)",
+          "#include <stdio.h>",
+          "#include \"testhelp.h\"",
+          "#include \"limits.h\"",
+          "#define UNUSED(x) (void)(x)",
+          "#endif",
+          "#ifdef SDS_TEST_MAIN",
+          "#endif"
+        ],
+        "sds.h": [
+          "#ifndef __SDS_H",
+          "#define __SDS_H",
+          "#define SDS_MAX_PREALLOC (1024*1024)",
+          "#include <sys/types.h>",
+          "#include <stdarg.h>",
+          "#include <stdint.h>",
+          "#define SDS_TYPE_5  0",
+          "#define SDS_TYPE_8  1",
+          "#define SDS_TYPE_16 2",
+          "#define SDS_TYPE_32 3",
+          "#define SDS_TYPE_64 4",
+          "#define SDS_TYPE_MASK 7",
+          "#define SDS_TYPE_BITS 3",
+          "#define SDS_HDR_VAR(T,s) struct sdshdr##T *sh = (void*)((s)-(sizeof(struct sdshdr##T)));",
+          "#define SDS_HDR(T,s) ((struct sdshdr##T *)((s)-(sizeof(struct sdshdr##T))))",
+          "#define SDS_TYPE_5_LEN(f) ((f)>>SDS_TYPE_BITS)",
+          "#ifdef __GNUC__",
+          "#else",
+          "#endif",
+          "#ifdef REDIS_TEST",
+          "#endif",
+          "#endif"
+        ],
+        "sdsalloc.h": [
+          "#define s_malloc malloc",
+          "#define s_realloc realloc",
+          "#define s_free free"
+        ],
+        "sdslog.h": [
+          "#ifndef SDSLOG_H",
+          "#define SDSLOG_H",
+          "#define SDS_LOG_ALLOC(str, size) ((void)(str), (void)(size))",
+          "#endif"
+        ],
+        "testhelp.h": [
+          "#ifndef __TESTHELP_H",
+          "#define __TESTHELP_H",
+          "#define test_cond(descr,_c) do { \\",
+          "#define test_report() do { \\",
+          "#endif"
+        ]
+      },
+      "recipes": [
+        "\t$(CC) -o sds-test sds.c -Wall -std=c99 -pedantic -O2 -DSDS_TEST_MAIN",
+        "\t@echo \">>> Type ./sds-test to run the sds.c unit tests.\"",
+        "\trm -f sds-test"
+      ],
+      "flags": "",
+      "compiler": "gcc (Debian 14.2.0-19) 14.2.0"
+    },
+    "actual": {
+      "sds-test": [
+        "sds.c",
+        "sds.h",
+        "sdsalloc.h",
+        "sdslog.h",
+        "testhelp.h"
+      ]
+    },
+    "declared": {
+      "sds-test": [
+        "sds.c",
+        "sds.h",
+        "sdsalloc.h",
+        "testhelp.h"
+      ]
+    },
+    "findings": [
+      {
+        "type": "MISSING",
+        "target": "sds-test",
+        "dependency": "sdslog.h"
+      }
+    ],
+    "added": [
+      [
+        "MISSING",
+        "sds-test",
+        "sdslog.h"
+      ]
+    ],
+    "resolved": [],
+    "refreshed": [
+      "sds-test"
+    ],
+    "reused": [],
+    "elapsed_s": 0.010137323290109634
+  },
+  "artifacts": [
+    {
+      "uri": "artifact://job-5529ce34781145d89e9052796197e04d/fixed-md-input.json",
+      "sha256": "43c21ac10850262dcfc2f2a14042131f1b32ff0dc53e1ee1493f2334b3859a85",
+      "bytes": 3761
+    }
+  ]
+}
