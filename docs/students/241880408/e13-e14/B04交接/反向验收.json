@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-23",
+  "executor": "刘智健 / 241880408 / 苏州校区 / A04",
+  "source_sha": "f62eacae5a5c24889b2006054af050f85ddfaa63",
+  "image": "course-e11e12:241880408",
+  "image_id": "sha256:da712cc3e6e45eaf9204d2c4c97b4548e6caed2f9988032f8a9b659c01d2cb81",
+  "base": "dcb12146508651c7085b98a353c22724a94fbbe1",
+  "target": "7ecb72dae9da893b589fb79958ce2cadaaac9ec5",
+  "C1": {
+    "job_id": "job-1aa601b96fe04adf9f5b79d2acf7ab73",
+    "trace_id": "trace-55b04d01b172457294e3c63eedc265d3",
+    "artifact_count": 87,
+    "findings": [
+      {
+        "type": "MISSING",
+        "target": "main.o",
+        "dependency": "config.h"
+      },
+      {
+        "type": "REDUNDANT",
+        "target": "main.o",
+        "dependency": "unused.h"
+      },
+      {
+        "type": "MISSING",
+        "target": "helper.o",
+        "dependency": "b04-settings.h"
+      }
+    ]
+  },
+  "C2": {
+    "code": "STALE_REPORT",
+    "message": "Report belongs to another commit"
+  },
+  "C3": {
+    "code": "ARTIFACT_HASH_MISMATCH",
+    "message": "Fixed report content changed during transfer"
+  },
+  "C4": {
+    "code": "DRAFT_FAILED",
+    "message": "Docker client command exceeded 0.01s"
+  },
+  "C5": "ROLLBACK_AND_SOURCE_INTEGRITY_PASS",
+  "C6": "FAKE_KEY_BLOCKED_AND_CLEANED",
+  "C7": {
+    "failed_job": "job-2271b659662843589c3da1513e8efcd7",
+    "success_job": "job-2e84ef4ea163430d81b903b15d1d0b1e"
+  },
+  "C8": {
+    "passed": true,
+    "job_id": "job-74277dd410d04305927f07d1bd34ea40",
+    "trace_id": "trace-1056e51dd5e6416e9022d6b0c1925a41",
+    "duplicate_same_job": true,
+    "conflict_http_status": 409,
+    "completed_job_survived_restart": true,
+    "patch_sha256": "ddbd03c89ae6c91a9fcb871b01ca0ef90954e62b1b99ca02b0b8d864c0a2bd62"
+  },
+  "C8_execution_scope": "A04在自己的云端HTTP服务上使用B04项目自测",
+  "five_stage": {
+    "job_id": "job-2e2219d6c0454ff998c29a7ffed23708",
+    "trace_id": "trace-e5257944f8a642e1902b2ae17e2cc71a",
+    "artifact_count": 161,
+    "patch_sha256": "ddbd03c89ae6c91a9fcb871b01ca0ef90954e62b1b99ca02b0b8d864c0a2bd62"
+  },
+  "compose": {
+    "compose-fixed-sample": {
+      "status": "SUCCEEDED",
+      "job_id": "job-e1c58a64c3984a1f8e06077e3ff67539",
+      "trace_id": "trace-650efcd1459e4cbb989a70ca0f27c94a",
+      "error": null
+    },
+    "compose-A04-SDS": {
+      "status": "SUCCEEDED",
+      "job_id": "job-deba31b60d6b4358b3d099616c0b5f07",
+      "trace_id": "trace-33012705cf414532afc15d03f726a89c",
+      "error": null
+    },
+    "compose-B04": {
+      "status": "SUCCEEDED",
+      "job_id": "job-f0ac131a03464d2f9c6213f662670104",
+      "trace_id": "trace-4e84afede5314abf9dcd7366c1d7144f",
+      "error": null
+    },
+    "compose-B04-timeout": {
+      "status": "FAILED",
+      "job_id": "job-e28b554ddb4941a0b75aa17fb1f03d1c",
+      "trace_id": "trace-570e664b174b4e9ebb2e3793b15a06de",
+      "error": "draft HTTP 422: {\"status\": \"FAILED\", \"role\": \"draft\", \"error_code\": \"TIMEOUT\", \"error\": \"DRAFT_TIMED_OUT: Docker client command exceeded 0.01s\"}\n"
+    },
+    "compose-B04-recovery": {
+      "status": "SUCCEEDED",
+      "job_id": "job-6bed5d7f7249437fb15dd79cddc250c2",
+      "trace_id": "trace-88c78185bba24298a1933d6ebdc2e56b",
+      "error": null
+    }
+  },
+  "source_history_image_scan": "PASS",
+  "runtime_scan": "PASS",
+  "received_runtime_scan": "PASS",
+  "personal_compose_stopped": true,
+  "shared_8267_service_preserved": true,
+  "return_archive_sha256": "3275492b9612ec773058168521fea02df7c6338ef83d889f397448dabed0945d"
+}

@@ -1,0 +1,13 @@
+{
+  "group": "B04",
+  "maintainer": "241830086",
+  "source": "course fixture, mixed style",
+  "student_change": "helper.c reads new b04-settings.h; helper.o lacks its prerequisite",
+  "base": "dcb12146508651c7085b98a353c22724a94fbbe1",
+  "target": "7ecb72dae9da893b589fb79958ce2cadaaac9ec5",
+  "expected_output": "1",
+  "build_command": "make app",
+  "clean_command": "make clean",
+  "candidate_sha256": "61702fa82e6af08889bbabcdd91d0ca15c5942d8dfe5f989911fb7dfd041139e",
+  "receiver_action": "Clone b04.bundle and remap repo/candidate paths to receiver workspace"
+}
