@@ -1,0 +1,2 @@
+# Preserve the exact received input bytes and their SHA256 on every platform.
+* -text

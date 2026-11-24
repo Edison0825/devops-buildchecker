@@ -1,0 +1,56 @@
+{
+  "archives": [
+    {
+      "file": "receipt.tar.gz",
+      "sha256": "5e1ed7880d6daa91a8f3d8c9110c2b2970bedf3a660ec5ae630df323edcf0303",
+      "hash_matches": true
+    },
+    {
+      "file": "B04-to-A04-CMake-01.tar.gz",
+      "sha256": "39844a9cf364b0418336428a1c2ab69e39d79091b532926ba3c83e11d822ee23",
+      "hash_matches": true
+    }
+  ],
+  "B_job_id": "job-5529ce34781145d89e9052796197e04d",
+  "B_trace_id": "trace-f1a247b749ea41cdbc12cfe7c7ef84ef",
+  "status": "SUCCEEDED",
+  "target_commit": "3d658f2049015bba04df8d425d378fd196b15702",
+  "A_source_report": {
+    "job_id": "job-2f74a415c3f74acabfadacb90c2fda8b",
+    "trace_id": "trace-21016570683c4f0fa2750b7dc1c6a6e4",
+    "uri": "artifact://job-2f74a415c3f74acabfadacb90c2fda8b/incremental-check.json",
+    "sha256": "1e903bebbc364fe9995261b5da0abcbd8959f23ef7526a53a1af25a91a5166de"
+  },
+  "accepted": true,
+  "remaining_MISSING": 0,
+  "patch_sha256": "6774f98f21cc1a9c596243fd7f2d238f3c832284ab03645a46f22680b2891764",
+  "included_artifacts_verified": [
+    "candidate.patch",
+    "draft-build/result.json",
+    "fixed-md-input.json",
+    "fixed-md.json",
+    "recheck.json",
+    "repair.json",
+    "request.json",
+    "validation/validation.json"
+  ],
+  "verification_scope": "All included referenced artifacts verified; 91 listed artifacts absent from this compact receipt are not claimed as independently verified.",
+  "original_A_report_independently_matched": {
+    "matched": true,
+    "source": "/root/devops-students/241880408/buildchecker/work/e13e14-audit-20261117-rerun2/cases/A04-real-current-report/incremental-check.json",
+    "sha256": "1e903bebbc364fe9995261b5da0abcbd8959f23ef7526a53a1af25a91a5166de",
+    "source_report": {
+      "job_id": "job-2f74a415c3f74acabfadacb90c2fda8b",
+      "trace_id": "trace-21016570683c4f0fa2750b7dc1c6a6e4",
+      "uri": "artifact://job-2f74a415c3f74acabfadacb90c2fda8b/incremental-check.json",
+      "sha256": "1e903bebbc364fe9995261b5da0abcbd8959f23ef7526a53a1af25a91a5166de"
+    }
+  },
+  "artifacts_not_in_receipt_count": 91,
+  "B_implementation_environment": {
+    "executor": "241830086",
+    "commit": "8f0ec743003185e0ab65b62267e842ddc69faa4e",
+    "image": "sha256:b6b735b61d7a1ac0b3b04ac6b4ae1dfbbada49be24db5b25a0972c09c78b9056"
+  },
+  "B_reported_latest_source_sha": "7a2ae4eb89e1cb92a8312dfe26409bb123fbd5e3"
+}

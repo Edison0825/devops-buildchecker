@@ -52,7 +52,9 @@ def compile_pairs(p):
         sources=[d for d in deps if d.endswith('.c')]
         if len(sources)!=1 or not recipe: continue
         text=' '.join(recipe)
-        if re.search(r'-o\s+'+re.escape(target)+r'(\s|$)',text) and ('-c' in text or '-o' in text):
+        # $@ and $< are the portable spelling of "this target" / "this prerequisite".
+        text=text.replace('$@',target).replace('${@}',target).replace('$<',sources[0]).replace('${<}',sources[0])
+        if re.search(r'-o\s+'+re.escape(target)+r'(\s|$)',text):
             pairs.append((target,sources[0]))
     if not pairs: raise ValueError('UNSUPPORTED_RULE no explicit compile rule with one C source')
     return pairs
